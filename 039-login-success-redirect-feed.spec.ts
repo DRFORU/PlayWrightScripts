@@ -1,0 +1,35 @@
+import { test, expect } from '@playwright/test';
+import { LoginPage } from '../../../pages/loginPage';
+import { testData } from '../../../utils/testData';
+
+test('#TCL039 - Verify that a successful login redirects to the Feed page.', 
+  async ({ page }, testInfo) => {
+
+  test.setTimeout(150000); //we have to add 'setTimeout', you wnat stop the execution more than 30sec
+  const login = new LoginPage(page);
+
+  await test.step('Navigate to login page', async () => {
+    await login.navigate();
+  });
+
+  await test.step('Enter EmailorMobile', async () => {
+    await login.enterEmailorMobile(testData.validServerEmail);//✅ use from testData
+  });
+
+  await test.step('Click Get OTP', async () => {
+    await login.clickGetOTP();
+  });
+
+  await page.waitForTimeout(2000);
+// Enter logic
+  await test.step('Enter OTP', async () => {
+  await login.enterOTP('1234');
+  });
+
+  await page.waitForTimeout(8000);
+
+  await test.step('Verify Upload Product Button', async () => 
+    {
+      await expect(page.locator('#feeduploadproducts')).toBeVisible();
+    });
+})
